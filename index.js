@@ -28,6 +28,7 @@ async function run() {
     try {
        const menuCollection = client.db("bristoDB").collection("menu")
        const reviewCollection = client.db("bristoDB").collection("review")
+       const cartCollection = client.db("bristoDB").collection("carts")
         await client.connect();
 
         app.get("/menu", async(req, res) => {
@@ -36,6 +37,19 @@ async function run() {
         });
         app.get("/review", async(req, res) => {
             const result = await reviewCollection.find().toArray();
+            res.send(result)
+        });
+
+        app.post("/carts",async(req,res)=>{
+            const data = req.body
+            const result = await cartCollection.insertOne(data)
+            res.send(result)
+        })
+
+        app.get("/carts", async(req, res) => {
+            const email = req.query.email
+            const query ={email: email}
+            const result = await cartCollection.find(query).toArray();
             res.send(result)
         });
       
